@@ -1,0 +1,59 @@
+Some LED operations for PIC18F4620 microcontroller. Code is written in PIC assembly language.
+
+Application Behavior
+The application has 3 phases. For ease of understanding , the buttons will be associated with the following names:
+Pin      Button Name     
+RB2  ->   UP/RIGHT
+RB1  ->   DOWN/LEFT
+RB0  ->   TOGGLE
+RB3  ->   CONFIRM
+
+
+The application should perform the designated action for a button only when that particular button is released.
+A line refers to subsequent LEDs in a row being ON. A shape refers to the collection of lines etched in a row since the
+beginning of the application.
+
+
+
+Start-Up :
+In this phase, initialize your application and then turn all of the LEDs on all of rows ON for 1000±50 msecs,
+and then turn them OFF. Your application should not be responsive to button presses/releases etc. during this
+period. Immediately move on to row selection phase after turning off the LEDs with the topmost row selected
+and no row has any shape drawn on (meaning they are all OFF).
+
+
+
+
+Row Selection Phase:
+In this phase, the user selects which row to draw a line on. The LEDs on the selected row should blink with
+intervals of 200±50 msecs. The blinking should override any previously drawn shape on that row.
+The user can use UP/DOWN buttons to make the row above/below the selected row the new selected row. If
+moving up/down is not possible (e.g. pressing UP when the selected row is the topmost row) the action should
+have no effect. If a selected row has a previously drawn shape, switching from this row to another 
+row should reveal this shape (which was overriden by blinking when the row was selected).
+The TOGGLE button inverts the colors (toggles each LED) in the underlying shape of the selected row. Again,
+this should be only apparent when the selected row changes as the blinking overrides the shape seen on a row.
+The CONFIRM button finalizes the decision on the selected row and transitions the application to drawing
+phase.
+
+
+
+
+Drawing Phase :
+In this phase, a candidate line is added to the previously drawn shape in the selected row. This addition
+is similar to ”regular” drawing, the ON LEDs on the candidate line should turn previously OFF LEDs ON. The
+candidate line is always of length 1 and starts at the left edge of the row when drawing phase is entered, and
+should be visible in the row along with the previously drawn shape throughout the entire phase.
+The TOGGLE button switches between the left or right edge of the line as the selected edge. The right edge
+is always selected by default when drawing phase is entered.
+The RIGHT/LEFT buttons move the selected edge right or left in the row. However, the line length can never
+be shorter than 1 and the right edge can not move past the left edge / vice versa. As the line is modified, the
+change should be visible in the row.
+The CONFIRM button permanently etches the line into the row shape and should transition the application
+back to row selection phase with the current selected row as the candidate selected row again (meaning the row
+should start blinking).
+
+
+
+Code is resistant against debouncing issues. Irregular pulses which have period shorter than 10msec will not affect program.  
+hex, pcf and pzw files are also provided. Code can be run after uploading these files to the Picsimlab.
